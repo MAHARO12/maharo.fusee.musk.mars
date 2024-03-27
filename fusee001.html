@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starship Launch and Landing</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+    }
+
+    .rocket-container {
+      position: relative;
+      height: 100%;
+    }
+
+    .rocket {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(0) rotate(0deg);
+      animation: launch 2s ease-out forwards;
+      display: none;
+    }
+
+    .countdown {
+      font-size: 36px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+    }
+
+    .expanding-text {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      color: white;
+      text-align: center;
+      display: none;
+    }
+
+    @keyframes launch {
+      0% {
+        transform: translateX(-50%) translateY(0);
+      }
+      35% {
+        transform: translateX(-50%) translateY(-50%);
+      }
+      45% {
+        transform: translateX(-50%) translateY(-60%);
+      }
+      55% {
+        transform: translateX(-50%) translateY(-70%);
+      }
+      100% {
+        transform: translateX(-50%) translateY(-500%);
+      }
+    }
+
+    @keyframes land {
+      0% {
+        transform: translateX(-50%) translateY(-500%) rotate(180deg);
+      }
+      35% {
+        transform: translateX(-50%) translateY(-70%) rotate(180deg);
+      }
+      45% {
+        transform: translateX(-50%) translateY(-60%) rotate(180deg);
+      }
+      55% {
+        transform: translateX(-50%) translateY(-50%) rotate(180deg);
+      }
+      100% {
+        transform: translateX(-50%) translateY(0) rotate(0deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="rocket-container">
+    <img class="rocket" src="musk.png" alt="Rocket">
+    <div class="expanding-text"></div>
+  </div>
+
+  <div class="countdown"><H1>5</H1></div>
+
+  <script>
+    const countdown = 5;
+    let countdownInterval;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      countdownInterval = setInterval(updateCountdown, 1000);
+    });
+
+    function updateCountdown() {
+      const countdownElement = document.querySelector('.countdown');
+      let count = parseInt(countdownElement.textContent);
+      count--;
+      countdownElement.textContent = count;
+      if (count <= 0) {
+        clearInterval(countdownInterval);
+        countdownElement.style.display = 'none';
+        launch();
+      }
+    }
+
+    async function launch() {
+      const rocket = document.querySelector('.rocket');
+      const expandingText = document.querySelector('.expanding-text');
+      rocket.style.display = 'block';
+      rocket.style.animation = 'launch 2s ease-out forwards';
+      
+      await sleep(3000); // Wait for rocket to reach its peak
+      
+      rocket.style.animation = 'land 2s ease-out forwards';
+      await sleep(2000); // Wait for rocket to land
+
+      rocket.style.display = 'none';
+      expandingText.style.display = 'block';
+      await typeText(expandingText, "Welcome to Mars, where every grain of sand tells a story, where every dawn beckons to endless adventure. Join us under the stars, explore the unexplored, and write with us the first chapters of a new space age. 🚀🔴 Explore Mars now!");
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function typeText(element, text) {
+      for (let i = 0; i < text.length; i++) {
+        element.textContent += text[i];
+        await sleep(100); // Adjust typing speed here (milliseconds)
+      }
+    }
+  </script>
+</body>
+</html>
